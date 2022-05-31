@@ -845,8 +845,6 @@ ext4_dynamic_remap(struct file *file1, struct file *file2,
 	ext4_fallocate_impl(handle, file1, 0, offset1, count, 1);
 
 	/* Wait for all existing dio workers */
-	ext4_inode_block_unlocked_dio(rec_inode);
-	ext4_inode_block_unlocked_dio(donor_inode);
 	inode_dio_wait(rec_inode);
 	inode_dio_wait(donor_inode);
 
@@ -960,8 +958,6 @@ ext4_dynamic_remap(struct file *file1, struct file *file2,
 	ext4_ext_drop_refs(path);
 	kfree(path);
 	ext4_double_up_write_data_sem(rec_inode, donor_inode);
-	ext4_inode_resume_unlocked_dio(rec_inode);
-	ext4_inode_resume_unlocked_dio(donor_inode);
 
 	ext4_handle_sync(handle);
 	ext4_journal_stop(handle);
