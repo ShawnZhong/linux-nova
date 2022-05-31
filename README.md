@@ -1,3 +1,15 @@
+```shell
+make mrproper
+make oldconfig
+scripts/config --set-str SYSTEM_TRUSTED_KEYS ""
+KBUILD_BUILD_TIMESTAMP='' make CC="ccache gcc" -j`nproc` LOCALVERSION=-nova-splitfs KDEB_PKGVERSION=2 deb-pkg
+sudo dpkg -i ../linux-*.deb
+
+awk -F\' '$1=="menuentry " || $1=="submenu " {print i++ " : " $2}; /\tmenuentry / {print "\t" i-1">"j++ " : " $2};' /boot/grub/grub.cfg
+sudo grub-reboot "1>6" && sudo reboot
+```
+---
+
 # NOVA: NOn-Volatile memory Accelerated log-structured file system
 
 ### Linux versions supported
