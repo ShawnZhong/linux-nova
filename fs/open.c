@@ -1180,13 +1180,11 @@ struct file *file_open_root(struct dentry *dentry, struct vfsmount *mnt,
 }
 EXPORT_SYMBOL(file_open_root);
 
-long long do_sys_open_inode_size(int dfd, const char __user *filename, int flags, umode_t mode, unsigned long __user* inodeno, unsigned long long __user *size)
+long do_sys_open(int dfd, const char __user *filename, int flags, umode_t mode)
 {
 	struct open_flags op;
 	int fd = build_open_flags(flags, mode, &op);
 	struct filename *tmp;
-	unsigned long ino = 0;
-	unsigned long long length = 0;
 
 	if (fd)
 		return fd;
@@ -1204,12 +1202,7 @@ long long do_sys_open_inode_size(int dfd, const char __user *filename, int flags
 		} else {
 			fsnotify_open(f);
 			fd_install(fd, f);
-			copy_to_user(inodeno, &((f->f_inode)->i_ino), sizeof(unsigned long));
-			copy_to_user(size, &((f->f_inode)->i_size), sizeof(unsigned long long));
 		}
-	} else {
-		copy_to_user(inodeno, &ino, sizeof(unsigned long));
-		copy_to_user(size, &length, sizeof(unsigned long long));
 	}
 	putname(tmp);
 	return fd;
